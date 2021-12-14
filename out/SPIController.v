@@ -1,5 +1,6 @@
 // Generator : SpinalHDL v1.6.0    git head : 73c8d8e2b86b45646e9d0b2e729291f2b65e6be3
 // Component : SPIController
+// Git hash  : efc862516b2707ad08273625469bf60d3aec3d12
 
 
 `define ctrlLogic_fsm_enumDefinition_binary_sequential_type [2:0]
@@ -26,9 +27,9 @@ module SPIController (
   input               clk,
   input               resetn
 );
-  wire       [7:0]    fifoInOut_dout;
-  wire                fifoInOut_empty;
-  wire                fifoInOut_full;
+  wire       [7:0]    fifoInOut_Q;
+  wire                fifoInOut_Empty;
+  wire                fifoInOut_Full;
   reg                 regControllerEnable;
   reg        [4:0]    regPrescaler;
   reg                 regCS;
@@ -60,25 +61,26 @@ module SPIController (
   wire                when_spi_controller_apb3_l160;
   wire                when_spi_controller_apb3_l161;
   wire                when_spi_controller_apb3_l177;
+  wire                when_spi_controller_apb3_l194;
   wire                when_spi_controller_apb3_l195;
   reg        `ctrlLogic_fsm_enumDefinition_binary_sequential_type ctrlLogic_fsm_stateReg;
   reg        `ctrlLogic_fsm_enumDefinition_binary_sequential_type ctrlLogic_fsm_stateNext;
   wire                _zz_when_StateMachine_l214;
   wire                _zz_when_StateMachine_l214_1;
   wire                when_State_l228;
-  wire                when_spi_controller_apb3_l248;
-  wire                when_spi_controller_apb3_l252;
-  wire                when_spi_controller_apb3_l261;
-  wire                when_spi_controller_apb3_l276;
-  wire                when_spi_controller_apb3_l291;
-  wire                when_spi_controller_apb3_l296;
-  wire                when_spi_controller_apb3_l302;
+  wire                when_spi_controller_apb3_l245;
+  wire                when_spi_controller_apb3_l249;
+  wire                when_spi_controller_apb3_l258;
+  wire                when_spi_controller_apb3_l273;
+  wire                when_spi_controller_apb3_l288;
+  wire                when_spi_controller_apb3_l293;
+  wire                when_spi_controller_apb3_l299;
+  wire                when_spi_controller_apb3_l300;
+  wire                when_spi_controller_apb3_l301;
   wire                when_spi_controller_apb3_l303;
-  wire                when_spi_controller_apb3_l304;
-  wire                when_spi_controller_apb3_l306;
   wire                when_StateMachine_l214;
   wire                when_StateMachine_l230;
-  wire                when_spi_controller_apb3_l236;
+  wire                when_spi_controller_apb3_l233;
   wire                when_StateMachine_l230_1;
   wire                when_StateMachine_l230_2;
   `ifndef SYNTHESIS
@@ -88,14 +90,14 @@ module SPIController (
 
 
   Fifo fifoInOut (
-    .clk      (clk              ), //i
-    .srst     (regFifoReset     ), //i
-    .din      (regFifoDataIn    ), //i
-    .wr_en    (regFifoWrEn      ), //i
-    .rd_en    (regFifoRdEn      ), //i
-    .dout     (fifoInOut_dout   ), //o
-    .empty    (fifoInOut_empty  ), //o
-    .full     (fifoInOut_full   )  //o
+    .Clk      (clk              ), //i
+    .Reset    (regFifoReset     ), //i
+    .Data     (regFifoDataIn    ), //i
+    .WrEn     (regFifoWrEn      ), //i
+    .RdEn     (regFifoRdEn      ), //i
+    .Q        (fifoInOut_Q      ), //o
+    .Empty    (fifoInOut_Empty  ), //o
+    .Full     (fifoInOut_Full   )  //o
   );
   `ifndef SYNTHESIS
   always @(*) begin
@@ -133,29 +135,16 @@ module SPIController (
       end
       8'h0c : begin
         if(apbCtrl_askRead) begin
-          regFifoRdEn = 1'b1;
-          case(switch_spi_controller_apb3_l178)
-            3'b001 : begin
-            end
-            3'b010 : begin
-            end
-            3'b011 : begin
-            end
-            3'b100 : begin
-            end
-            3'b101 : begin
-              regFifoRdEn = 1'b0;
-            end
-            default : begin
-            end
-          endcase
+          if(when_spi_controller_apb3_l195) begin
+            regFifoRdEn = 1'b1;
+          end
         end
       end
       default : begin
       end
     endcase
     if(when_StateMachine_l230) begin
-      if(when_spi_controller_apb3_l236) begin
+      if(when_spi_controller_apb3_l233) begin
         regFifoRdEn = ctrlLogic_shouldRdFifo;
       end
     end
@@ -179,7 +168,7 @@ module SPIController (
           end
         end
         if(apbCtrl_askRead) begin
-          if(when_spi_controller_apb3_l195) begin
+          if(when_spi_controller_apb3_l194) begin
             io_apb_PREADY = 1'b0;
           end
         end
@@ -195,15 +184,15 @@ module SPIController (
       8'h0 : begin
         io_apb_PRDATA[5 : 5] = regControllerEnable;
         io_apb_PRDATA[7 : 7] = regCS;
-        io_apb_PRDATA[16 : 16] = fifoInOut_full;
-        io_apb_PRDATA[17 : 17] = fifoInOut_empty;
+        io_apb_PRDATA[16 : 16] = fifoInOut_Full;
+        io_apb_PRDATA[17 : 17] = fifoInOut_Empty;
       end
       8'h04 : begin
         io_apb_PRDATA[10 : 0] = apbCountTx;
         io_apb_PRDATA[26 : 16] = apbCountRx;
       end
       8'h08 : begin
-        io_apb_PRDATA[7 : 0] = fifoInOut_dout;
+        io_apb_PRDATA[7 : 0] = fifoInOut_Q;
       end
       8'h0c : begin
         io_apb_PRDATA[31 : 0] = _zz_io_apb_PRDATA;
@@ -231,9 +220,9 @@ module SPIController (
       `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockLow : begin
       end
       `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockHigh : begin
-        if(when_spi_controller_apb3_l291) begin
-          if(when_spi_controller_apb3_l302) begin
-            if(when_spi_controller_apb3_l306) begin
+        if(when_spi_controller_apb3_l288) begin
+          if(when_spi_controller_apb3_l299) begin
+            if(when_spi_controller_apb3_l303) begin
               ctrlLogic_shouldRdFifo = 1'b0;
             end else begin
               ctrlLogic_shouldRdFifo = 1'b1;
@@ -255,8 +244,8 @@ module SPIController (
       end
       `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_fifoRd : begin
         if(when_State_l228) begin
-          if(!when_spi_controller_apb3_l248) begin
-            if(!when_spi_controller_apb3_l252) begin
+          if(!when_spi_controller_apb3_l245) begin
+            if(!when_spi_controller_apb3_l249) begin
               ctrlLogic_fsm_wantExit = 1'b1;
             end
           end
@@ -293,7 +282,8 @@ module SPIController (
   assign when_spi_controller_apb3_l160 = (io_apb_PREADY == 1'b0);
   assign when_spi_controller_apb3_l161 = (regFifoDataOutRdy == 1'b1);
   assign when_spi_controller_apb3_l177 = (switch_spi_controller_apb3_l178 < 3'b100);
-  assign when_spi_controller_apb3_l195 = (switch_spi_controller_apb3_l178 < 3'b101);
+  assign when_spi_controller_apb3_l194 = (switch_spi_controller_apb3_l178 < 3'b101);
+  assign when_spi_controller_apb3_l195 = (switch_spi_controller_apb3_l178 < 3'b100);
   assign _zz_when_StateMachine_l214 = (ctrlLogic_fsm_stateReg == `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_fifoRd);
   assign _zz_when_StateMachine_l214_1 = (ctrlLogic_fsm_stateNext == `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_fifoRd);
   always @(*) begin
@@ -306,10 +296,10 @@ module SPIController (
       end
       `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_fifoRd : begin
         if(when_State_l228) begin
-          if(when_spi_controller_apb3_l248) begin
+          if(when_spi_controller_apb3_l245) begin
             ctrlLogic_fsm_stateNext = `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockLow;
           end else begin
-            if(when_spi_controller_apb3_l252) begin
+            if(when_spi_controller_apb3_l249) begin
               ctrlLogic_fsm_stateNext = `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockLow;
             end else begin
               ctrlLogic_fsm_stateNext = `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_BOOT;
@@ -318,16 +308,16 @@ module SPIController (
         end
       end
       `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockLow : begin
-        if(when_spi_controller_apb3_l276) begin
+        if(when_spi_controller_apb3_l273) begin
           ctrlLogic_fsm_stateNext = `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockHigh;
         end
       end
       `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockHigh : begin
-        if(when_spi_controller_apb3_l291) begin
-          if(when_spi_controller_apb3_l296) begin
+        if(when_spi_controller_apb3_l288) begin
+          if(when_spi_controller_apb3_l293) begin
             ctrlLogic_fsm_stateNext = `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockLow;
           end
-          if(when_spi_controller_apb3_l302) begin
+          if(when_spi_controller_apb3_l299) begin
             ctrlLogic_fsm_stateNext = `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_fifoRd;
           end
         end
@@ -344,19 +334,19 @@ module SPIController (
   end
 
   assign when_State_l228 = (_zz_when_State_l228 <= 2'b01);
-  assign when_spi_controller_apb3_l248 = (11'h0 < apbCountTx);
-  assign when_spi_controller_apb3_l252 = (11'h0 < apbCountRx);
-  assign when_spi_controller_apb3_l261 = ((ctrlLogic_spiDataShiftCounter == 3'b000) && (regSkipTxReadback == 1'b0));
-  assign when_spi_controller_apb3_l276 = (ctrlLogic_prescaleCounter == regPrescaler);
-  assign when_spi_controller_apb3_l291 = (ctrlLogic_prescaleCounter == regPrescaler);
-  assign when_spi_controller_apb3_l296 = (3'b000 < ctrlLogic_spiDataShiftCounter);
-  assign when_spi_controller_apb3_l302 = (ctrlLogic_spiDataShiftCounter == 3'b000);
-  assign when_spi_controller_apb3_l303 = (11'h0 < apbCountTx);
-  assign when_spi_controller_apb3_l304 = (11'h0 < apbCountRx);
-  assign when_spi_controller_apb3_l306 = (apbCountTx == 11'h001);
+  assign when_spi_controller_apb3_l245 = (11'h0 < apbCountTx);
+  assign when_spi_controller_apb3_l249 = (11'h0 < apbCountRx);
+  assign when_spi_controller_apb3_l258 = ((ctrlLogic_spiDataShiftCounter == 3'b000) && (regSkipTxReadback == 1'b0));
+  assign when_spi_controller_apb3_l273 = (ctrlLogic_prescaleCounter == regPrescaler);
+  assign when_spi_controller_apb3_l288 = (ctrlLogic_prescaleCounter == regPrescaler);
+  assign when_spi_controller_apb3_l293 = (3'b000 < ctrlLogic_spiDataShiftCounter);
+  assign when_spi_controller_apb3_l299 = (ctrlLogic_spiDataShiftCounter == 3'b000);
+  assign when_spi_controller_apb3_l300 = (11'h0 < apbCountTx);
+  assign when_spi_controller_apb3_l301 = (11'h0 < apbCountRx);
+  assign when_spi_controller_apb3_l303 = (apbCountTx == 11'h001);
   assign when_StateMachine_l214 = (_zz_when_StateMachine_l214 && (! _zz_when_StateMachine_l214_1));
   assign when_StateMachine_l230 = ((! _zz_when_StateMachine_l214) && _zz_when_StateMachine_l214_1);
-  assign when_spi_controller_apb3_l236 = (11'h0 < apbCountTx);
+  assign when_spi_controller_apb3_l233 = (11'h0 < apbCountTx);
   assign when_StateMachine_l230_1 = ((! (ctrlLogic_fsm_stateReg == `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockLow)) && (ctrlLogic_fsm_stateNext == `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockLow));
   assign when_StateMachine_l230_2 = ((! (ctrlLogic_fsm_stateReg == `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockHigh)) && (ctrlLogic_fsm_stateNext == `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockHigh));
   always @(posedge clk or negedge resetn) begin
@@ -415,16 +405,16 @@ module SPIController (
             switch_spi_controller_apb3_l178 <= (switch_spi_controller_apb3_l178 + 3'b001);
             case(switch_spi_controller_apb3_l178)
               3'b001 : begin
-                _zz_io_apb_PRDATA[7 : 0] <= fifoInOut_dout;
+                _zz_io_apb_PRDATA[7 : 0] <= fifoInOut_Q;
               end
               3'b010 : begin
-                _zz_io_apb_PRDATA[15 : 8] <= fifoInOut_dout;
+                _zz_io_apb_PRDATA[15 : 8] <= fifoInOut_Q;
               end
               3'b011 : begin
-                _zz_io_apb_PRDATA[23 : 16] <= fifoInOut_dout;
+                _zz_io_apb_PRDATA[23 : 16] <= fifoInOut_Q;
               end
               3'b100 : begin
-                _zz_io_apb_PRDATA[31 : 24] <= fifoInOut_dout;
+                _zz_io_apb_PRDATA[31 : 24] <= fifoInOut_Q;
               end
               3'b101 : begin
                 switch_spi_controller_apb3_l178 <= 3'b000;
@@ -443,8 +433,8 @@ module SPIController (
         end
         `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_fifoRd : begin
           if(when_State_l228) begin
-            if(!when_spi_controller_apb3_l248) begin
-              if(when_spi_controller_apb3_l252) begin
+            if(!when_spi_controller_apb3_l245) begin
+              if(when_spi_controller_apb3_l249) begin
                 regSkipTxReadback <= 1'b0;
               end else begin
                 regControllerEnable <= 1'b0;
@@ -453,21 +443,21 @@ module SPIController (
           end
         end
         `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockLow : begin
-          if(when_spi_controller_apb3_l276) begin
+          if(when_spi_controller_apb3_l273) begin
             ctrlLogic_regDataBit0 <= io_spiMISO;
           end
           ctrlLogic_prescaleCounter <= (ctrlLogic_prescaleCounter + 5'h01);
         end
         `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockHigh : begin
-          if(when_spi_controller_apb3_l291) begin
-            if(when_spi_controller_apb3_l296) begin
+          if(when_spi_controller_apb3_l288) begin
+            if(when_spi_controller_apb3_l293) begin
               ctrlLogic_spiDataShiftCounter <= (ctrlLogic_spiDataShiftCounter - 3'b001);
             end
-            if(when_spi_controller_apb3_l302) begin
-              if(when_spi_controller_apb3_l303) begin
+            if(when_spi_controller_apb3_l299) begin
+              if(when_spi_controller_apb3_l300) begin
                 apbCountTx <= (apbCountTx - 11'h001);
               end
-              if(when_spi_controller_apb3_l304) begin
+              if(when_spi_controller_apb3_l301) begin
                 apbCountRx <= (apbCountRx - 11'h001);
               end
               ctrlLogic_regSCK <= 1'b0;
@@ -533,14 +523,14 @@ module SPIController (
       `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_fifoRd : begin
         _zz_when_State_l228 <= (_zz_when_State_l228 - 2'b01);
         if(when_State_l228) begin
-          if(when_spi_controller_apb3_l248) begin
-            ctrlLogic_regData <= fifoInOut_dout;
+          if(when_spi_controller_apb3_l245) begin
+            ctrlLogic_regData <= fifoInOut_Q;
           end else begin
-            if(when_spi_controller_apb3_l252) begin
+            if(when_spi_controller_apb3_l249) begin
               ctrlLogic_regData <= 8'hff;
             end
           end
-          if(when_spi_controller_apb3_l261) begin
+          if(when_spi_controller_apb3_l258) begin
             regFifoDataIn <= ctrlLogic_regData;
             regFifoWrEn <= 1'b1;
           end
@@ -549,7 +539,7 @@ module SPIController (
       `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockLow : begin
       end
       `ctrlLogic_fsm_enumDefinition_binary_sequential_ctrlLogic_fsm_clockHigh : begin
-        if(when_spi_controller_apb3_l291) begin
+        if(when_spi_controller_apb3_l288) begin
           ctrlLogic_regData[7 : 1] <= ctrlLogic_regData[6 : 0];
           ctrlLogic_regData[0] <= ctrlLogic_regDataBit0;
         end

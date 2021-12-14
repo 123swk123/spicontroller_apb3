@@ -1,4 +1,4 @@
-name := "some_examples"
+name := "SPIController"
 
 version := "1.0"
 

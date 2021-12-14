@@ -191,17 +191,14 @@ class SPIController(strHeader: PrintWriter,
         apbCtrl.read(fifoDataDWOut, baseAddress + addrDataDwordOffset, 0)
         apbCtrl.onReadPrimitive(bus.misc.SingleMapping(baseAddress + addrDataDwordOffset), false, null) {
             fifoPushPopCnt := fifoPushPopCnt + 1
-            regFifoRdEn := True
-            when(fifoPushPopCnt < 5) (apbCtrl.readHalt())
+            when(fifoPushPopCnt < 5) {apbCtrl.readHalt()}
+            when(fifoPushPopCnt < 4) {regFifoRdEn := True}
             switch(fifoPushPopCnt) {
                 is(1) (fifoDataDWOut(0 to 7) := fifoInOut.io.dataOut)
                 is(2) (fifoDataDWOut(8 to 15) := fifoInOut.io.dataOut)
                 is(3) (fifoDataDWOut(16 to 23) := fifoInOut.io.dataOut)
                 is(4) (fifoDataDWOut(24 to 31) := fifoInOut.io.dataOut)
-                is(5) {
-                    regFifoRdEn := False
-                    fifoPushPopCnt := 0
-                }
+                is(5) {fifoPushPopCnt := 0}
                 default {}
             }
         }
@@ -377,7 +374,7 @@ object Top {
                     targetDirectory = targetDirectory,
                     defaultClockDomainFrequency = FixedFrequency(clkFreq),
                     defaultConfigForClockDomains = ClockDomainConfig(resetActiveLevel = LOW)
-                    ).generate(new SPIController(strHeader, 8, enableDWORDDataAccess = true, Vivado)).printPruned()
+                    ).generate(new SPIController(strHeader, 8, enableDWORDDataAccess = true, Gowin)).printPruned()
 
         strHeader.close()
     }
